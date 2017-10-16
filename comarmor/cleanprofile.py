@@ -12,14 +12,14 @@
 #    GNU General Public License for more details.
 #
 # ----------------------------------------------------------------------
-import apparmor.aa as apparmor
+import comarmor.ca as comarmor
 
 class Prof(object):
     def __init__(self, filename):
-        apparmor.init_aa()
-        self.aa = apparmor.aa
-        self.filelist = apparmor.filelist
-        self.include = apparmor.include
+        comarmor.init_ca()
+        self.ca = comarmor.ca
+        self.filelist = comarmor.filelist
+        self.include = comarmor.include
         self.filename = filename
 
 class CleanProf(object):
@@ -38,7 +38,7 @@ class CleanProf(object):
             if rule in other_file_includes:
                 self.other.filelist[self.other.filename]['include'].pop(rule)
 
-        for profile in self.profile.aa.keys():
+        for profile in self.profile.ca.keys():
             deleted += self.remove_duplicate_rules(profile)
 
         return deleted
@@ -48,27 +48,27 @@ class CleanProf(object):
         #Process every hat in the profile individually
         file_includes = list(self.profile.filelist[self.profile.filename]['include'].keys())
         deleted = 0
-        for hat in sorted(self.profile.aa[program].keys()):
+        for hat in sorted(self.profile.ca[program].keys()):
             #The combined list of includes from profile and the file
-            includes = list(self.profile.aa[program][hat]['include'].keys()) + file_includes
+            includes = list(self.profile.ca[program][hat]['include'].keys()) + file_includes
 
             #If different files remove duplicate includes in the other profile
             if not self.same_file:
                 for inc in includes:
-                    if self.other.aa[program][hat]['include'].get(inc, False):
-                        self.other.aa[program][hat]['include'].pop(inc)
+                    if self.other.ca[program][hat]['include'].get(inc, False):
+                        self.other.ca[program][hat]['include'].pop(inc)
                         deleted += 1
             #Clean up superfluous rules from includes in the other profile
             for inc in includes:
                 if not self.profile.include.get(inc, {}).get(inc, False):
-                    apparmor.load_include(inc)
-                deleted += apparmor.delete_duplicates(self.other.aa[program][hat], inc)
+                    comarmor.load_include(inc)
+                deleted += comarmor.delete_duplicates(self.other.ca[program][hat], inc)
 
             #Clean duplicate rules in other profile
-            for ruletype in apparmor.ruletypes:
+            for ruletype in comarmor.ruletypes:
                 if not self.same_file:
-                    deleted += self.other.aa[program][hat][ruletype].delete_duplicates(self.profile.aa[program][hat][ruletype])
+                    deleted += self.other.ca[program][hat][ruletype].delete_duplicates(self.profile.ca[program][hat][ruletype])
                 else:
-                    deleted += self.other.aa[program][hat][ruletype].delete_duplicates(None)
+                    deleted += self.other.ca[program][hat][ruletype].delete_duplicates(None)
 
         return deleted
