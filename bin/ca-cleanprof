@@ -14,23 +14,33 @@
 # ----------------------------------------------------------------------
 import argparse
 
-import apparmor.tools
+import comarmor.tools
 
 # setup exception handling
-from apparmor.fail import enable_aa_exception_handler
-enable_aa_exception_handler()
+from comarmor.fail import enable_ca_exception_handler
+enable_ca_exception_handler()
 
 # setup module translations
-from apparmor.translations import init_translation
+from comarmor.translations import init_translation
 _ = init_translation()
 
-parser = argparse.ArgumentParser(description=_('Cleanup the profiles for the given programs'))
-parser.add_argument('-d', '--dir', type=str, help=_('path to profiles'))
-parser.add_argument('program', type=str, nargs='+', help=_('name of program'))
-parser.add_argument('-s', '--silent', action='store_true', help=_('Silently overwrite with a clean profile'))
-parser.add_argument('--no-reload', dest='do_reload', action='store_false', default=True, help=_('Do not reload the profile after modifying it'))
+parser = argparse.ArgumentParser(description=_(
+    'Cleanup the profiles for the given programs'))
+parser.add_argument(
+    '-d', '--dir',
+    type=str,
+    help=_('path to profiles'))
+parser.add_argument(
+    'program',
+    type=str,
+    nargs='+',
+    help=_('name of program'))
+parser.add_argument(
+    '-s', '--silent',
+    action='store_true',
+    help=_('Silently overwrite with a clean profile'))
 args = parser.parse_args()
 
-clean = apparmor.tools.aa_tools('cleanprof', args)
+clean = comarmor.tools.ca_tools('cleanprof', args)
 
 clean.cleanprof_act()
