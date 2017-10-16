@@ -1,6 +1,7 @@
 # ----------------------------------------------------------------------
 #    Copyright (C) 2013 Kshitij Gupta <kgupta8592@gmail.com>
 #    Copyright (C) 2014-2017 Christian Boltz <apparmor@cboltz.de>
+#    Copyright (C) 2017 Ruffin White <roxfoxpox@gmail.com>
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of version 2 of the GNU General Public
@@ -14,26 +15,12 @@
 # ----------------------------------------------------------------------
 
 
-from apparmor.common import AppArmorBug, hasher
+from comarmor.common import ComArmorBug, hasher
 
-from apparmor.rule.capability       import CapabilityRuleset
-from apparmor.rule.change_profile   import ChangeProfileRuleset
-from apparmor.rule.dbus             import DbusRuleset
-from apparmor.rule.file             import FileRuleset
-from apparmor.rule.network          import NetworkRuleset
-from apparmor.rule.ptrace           import PtraceRuleset
-from apparmor.rule.rlimit           import RlimitRuleset
-from apparmor.rule.signal           import SignalRuleset
+from comarmor.rule.topic             import TopicRuleset
 
 ruletypes = {
-    'capability':       {'ruleset': CapabilityRuleset},
-    'change_profile':   {'ruleset': ChangeProfileRuleset},
-    'dbus':             {'ruleset': DbusRuleset},
-    'file':             {'ruleset': FileRuleset},
-    'network':          {'ruleset': NetworkRuleset},
-    'ptrace':           {'ruleset': PtraceRuleset},
-    'rlimit':           {'ruleset': RlimitRuleset},
-    'signal':           {'ruleset': SignalRuleset},
+    'topic':             {'ruleset': TopicRuleset},
 }
 
 class ProfileStorage:
@@ -87,7 +74,7 @@ class ProfileStorage:
         if key in self.data:
             return self.data[key]
         else:
-            raise AppArmorBug('attempt to read unknown key %s' % key)
+            raise ComArmorBug('attempt to read unknown key %s' % key)
 
     def __setitem__(self, key, value):
         # TODO: Most of the keys (containing *Ruleset, dict(), list() or hasher()) should be read-only.
@@ -97,10 +84,10 @@ class ProfileStorage:
         if key in self.data:
             self.data[key] = value
         else:
-            raise AppArmorBug('attempt to set unknown key %s' % key)
+            raise ComArmorBug('attempt to set unknown key %s' % key)
 
     def get(self, key, fallback=None):
         if key in self.data:
             return self.data.get(key, fallback)
         else:
-            raise AppArmorBug('attempt to read unknown key %s' % key)
+            raise ComArmorBug('attempt to read unknown key %s' % key)
