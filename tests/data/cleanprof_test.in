@@ -1,19 +1,22 @@
 # A simple test comment which will persist
 #include <tunables/global>
 
-/simple/cleanprof/test/profile {
+/a/simple/cleanprof/test/profile {
 	# Just for the heck of it, this comment wont see the day of light
 	#include <abstractions/base>
 
 	#Below rule comes from abstractions/base
-	allow topic /tf_static/locale/**  s,
-	allow topic /node/*/** s,
+	allow topic /tf_static/local/**  s,
+	allow topic /e_stop/button s,
+	allow topic /e_stop/deadman s,
+  allow topic /node/log_out s,
 
+	#Below rule not comes from abstractions/base
 	allow topic /node/foo/bar s,
 	allow topic /node/foo/** p,
 }
 
-/other/cleanprof/test/profile {
+/another/cleanprof/test/profile {
 	# This one shouldn't be affected by the processing
 	# However this comment will be wiped, need to change that
 	allow topic /node/*/** sp,

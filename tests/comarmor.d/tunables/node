@@ -7,7 +7,7 @@
 # @{NODEDIRS} is a space-separated list of where user node directories
 # are stored, for programs that must enumerate all node directories on a
 # system.
-@{NODEDIRS}=/node/
+@{NODEDIRS}=/node
 
 # Also, include files in tunables/node.d for site-specific adjustments to
 # @{NODEDIRS}.
