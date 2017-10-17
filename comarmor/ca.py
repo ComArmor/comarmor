@@ -19,6 +19,7 @@ import re
 import shutil
 import tempfile
 import time
+import traceback
 
 from copy import deepcopy
 
@@ -108,10 +109,6 @@ helpers = dict()  # Preserve this between passes # was our
 filelist = hasher()    # File level variables and stuff in config files
 
 
-from apparmor.aa import (
-    get_full_path,
-)
-
 
 def attach_profile_data(profiles, profile_data):
     # Make deep copy of data to avoid changes to
@@ -140,6 +137,40 @@ def delete_duplicates(profile, incname):
             deleted += profile[rule_type].delete_duplicates(filelist[incname][incname][rule_type])
 
     return deleted
+
+
+def fatal_error(message):
+    # Get the traceback to the message
+    tb_stack = traceback.format_list(traceback.extract_stack())
+    tb_stack = ''.join(tb_stack)
+    # Add the traceback to message
+    message = tb_stack + '\n\n' + message
+    debug_logger.error(message)
+
+    # Else tell user what happened
+    aaui.UI_Important(message)
+    sys.exit(1)
+
+
+def get_full_path(original_path):
+    """Return the full path after resolving any symlinks"""
+    path = original_path
+    link_count = 0
+    if not path.startswith('/'):
+        path = os.getcwd() + '/' + path
+    while os.path.islink(path):
+        link_count += 1
+        if link_count > 64:
+            fatal_error(_("Followed too many links while resolving %s") % (original_path))
+        direc, file = os.path.split(path)
+        link = os.readlink(path)
+        # If the link an absolute path
+        if link.startswith('/'):
+            path = link
+        else:
+            # Link is relative path
+            path = direc + '/' + link
+    return os.path.realpath(path)
 
 
 def get_include_data(filename):
