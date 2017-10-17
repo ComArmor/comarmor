@@ -46,7 +46,7 @@ class MinitoolsTest(CATest):
         real_output_file = os.path.join(self.profile_dir, raw_input_profile)
 
         #Our silly test program whose profile we wish to clean
-        cleanprof_test = ['/a/simple/cleanprof/test/profile']
+        cleanprof_test = ['simple']
 
         args = Namespace(dir=self.profile_dir, program=cleanprof_test, silent=True)
         clean = comarmor.tools.ca_tools('cleanprof', args)

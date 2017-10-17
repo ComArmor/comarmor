@@ -756,7 +756,7 @@ def write_header(prof_data, depth, name, embedded_hat, write_flags):
 
 
 def write_includes(prof_data, depth):
-    return write_single(prof_data, depth, '', 'include', '#include <', '>')
+    return write_single(prof_data, depth, '', 'include', 'include <', '>')
 
 
 def write_list_vars(prof_data, depth):

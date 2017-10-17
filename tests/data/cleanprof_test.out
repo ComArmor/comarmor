@@ -1,17 +1,17 @@
-#include <tunables/global>
+include <tunables/global>
 
-# A simple test comment which will persist
-
-
-/a/simple/cleanprof/test/profile {
-  #include <abstractions/base>
-
-  allow topic /node/foo/** p,
+profile other /another/cleanprof/test/profile {
+  allow topic /node/*/** ps,
   allow topic /node/foo/bar s,
 
 }
-/another/cleanprof/test/profile {
-  allow topic /node/*/** ps,
+# A simple test comment which will persist
+
+
+profile simple /a/simple/cleanprof/test/profile {
+  include <abstractions/base>
+
+  allow topic /node/foo/** p,
   allow topic /node/foo/bar s,
 
 }

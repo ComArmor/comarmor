@@ -66,6 +66,10 @@ class ca_tools:
                 else:
                     program = fq_path
                     profile = comarmor.get_profile_filename(fq_path)
+            else:
+                fq_path = p.strip()
+                program = None
+                profile = fq_path
 
             yield (program, profile)
 
