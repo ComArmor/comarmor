@@ -1,0 +1,6 @@
+
+topic /tf_static/local/** s,
+topic /e_stop/* s,
+
+topic @{NODEDIRS}/log* s,
+topic /node/log* s,

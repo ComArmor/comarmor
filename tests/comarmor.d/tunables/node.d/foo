@@ -1,0 +1,4 @@
+# The following is a space-separated list of where additional user node
+# directories are stored, each must have a trailing '/'. Directories added
+# here are appended to @{NODEDIRS}.  See tunables/node for details.
+#@{NODEDIRS}+=

@@ -1,0 +1,14 @@
+# @{NODE} is a space-separated list of all node directories. While
+# it doesn't refer to a specific node directory (ComArmor doesn't
+# enforce discretionary access controls) it can be used as if it did
+# refer to a specific node directory
+@{NODE}=@{NODEDIRS}/*/ /root/
+
+# @{NODEDIRS} is a space-separated list of where user node directories
+# are stored, for programs that must enumerate all node directories on a
+# system.
+@{NODEDIRS}=/node
+
+# Also, include files in tunables/node.d for site-specific adjustments to
+# @{NODEDIRS}.
+#include <tunables/node.d>
