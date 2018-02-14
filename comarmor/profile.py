@@ -46,6 +46,7 @@ class Profile:
     """Object representation of comarmor profile"""
 
     __slots__ = [
+        'path',
         'tree',
     ]
 
@@ -88,6 +89,12 @@ class Profile:
         rules = ElementTree.Element('rules')
         rules.extend(root.findall(".//{}".format(kind)))
         return rules
+
+    def findall(self, path, namespaces=None):
+        root = self.tree.getroot()
+        results = ElementTree.Element('results')
+        results.extend(root.findall(path, namespaces))
+        return results
 
 
 class ProfileStorage(MutableSequence):
@@ -146,3 +153,9 @@ class ProfileStorage(MutableSequence):
         for profile in self:
             rules.extend(profile.extract_rules(kind))
         return rules
+
+    def findall(self, path, namespaces=None):
+        results = ElementTree.Element('results')
+        for profile in self:
+            results.extend(profile.findall(path, namespaces))
+        return results

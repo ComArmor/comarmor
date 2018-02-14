@@ -125,7 +125,7 @@ def parse_profile_paths(paths):
                 "Invalid profile manifest '%s': %s" %
                 (filename, e)]
             raise
-        profile = Profile(tree=profile_tree)
+        profile = Profile(path=path, tree=profile_tree)
         profile_storage.append(profile)
 
     return profile_storage
