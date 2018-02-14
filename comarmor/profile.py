@@ -12,10 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 import re
+
 from collections.abc import MutableSequence
+from xml.etree import ElementTree
 
 from .exceptions import InvalidProfile
+from .xml.regex import convert_regexp
+
+
+def filter_rec(node, element, func):
+    for item in node.findall(element):
+        if func(item):
+            node.remove(item)
+        else:
+            filter_rec(item, element, func)
+
+# def find_rec(node, element):
+#     for item in node.findall(element):
+#         yield item
+#         for child in find_rec(item, element):
+#             yield child
+
+# def filter_rules(rules, kind=None, qualifier=None):
+#     filtered_rules = ElementTree.Element('rules')
+#
+#     rules.extend(profile.extract_rules(kind))
+#     return filtered_rules
 
 
 class Profile:
@@ -42,6 +66,28 @@ class Profile:
         for attr in self.__slots__:
             data[attr] = getattr(self, attr)
         return str(data)
+
+    def empty(self):
+        return self.tree.find('profile') is None
+
+    def filter_profile(self, key):
+        filtered_profile = copy.deepcopy(self)
+        root = filtered_profile.tree.getroot()
+
+        def filter_func(node):
+            attachment = node.find('attachment').text
+            patern = re.compile(convert_regexp(attachment))
+            return not patern.match(key)
+
+        filter_rec(node=root, element='profile', func=filter_func)
+
+        return filtered_profile
+
+    def extract_rules(self, kind):
+        root = self.tree.getroot()
+        rules = ElementTree.Element('rules')
+        rules.extend(root.findall(".//{}".format(kind)))
+        return rules
 
 
 class ProfileStorage(MutableSequence):
@@ -86,3 +132,17 @@ class ProfileStorage(MutableSequence):
         for attr in self.__slots__:
             data[attr] = getattr(self, attr)
         return str(data)
+
+    def filter_profiles(self, key):
+        profile_storage = copy.deepcopy(self)
+        for i in reversed(range(len(profile_storage))):
+            profile_storage[i] = profile_storage[i].filter_profile(key)
+            if profile_storage[i].empty():
+                del profile_storage[i]
+        return profile_storage
+
+    def extract_rules(self, kind):
+        rules = ElementTree.Element('rules')
+        for profile in self:
+            rules.extend(profile.extract_rules(kind))
+        return rules
