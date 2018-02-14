@@ -3,8 +3,7 @@
 <profile name="My Logger Profile" xmlns:xi="http://www.w3.org/2001/XInclude">
     <attachment>/logger</attachment>
 
-    <topic>
-        <qualifier>ALLOW</qualifier>
+    <topic qualifier="ALLOW">
         <attachment>/rosout</attachment>
         <permissions>
             <publish/>
@@ -12,8 +11,7 @@
         </permissions>
     </topic>
 
-    <topic>
-        <qualifier>ALLOW</qualifier>
+    <topic qualifier="ALLOW">
         <attachment>/rosout_agg</attachment>
         <permissions>
             <publish/>

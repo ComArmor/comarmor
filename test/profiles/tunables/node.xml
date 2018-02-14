@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<topic>
-    <qualifier>ALLOW</qualifier>
+<topic qualifier="ALLOW">
     <attachment>/rosout</attachment>
     <permissions>
         <publish/>

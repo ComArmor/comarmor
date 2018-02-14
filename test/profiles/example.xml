@@ -6,8 +6,7 @@
         <attachment>/talker</attachment>
         <xi:include href="tunables/node.xml" parse="xml"/>
 
-        <topic>
-            <qualifier>ALLOW</qualifier>
+        <topic qualifier="ALLOW">
             <attachment>/chatter</attachment>
             <permissions>
                 <publish/>
@@ -20,8 +19,7 @@
         <attachment>/listener</attachment>
         <xi:include href="tunables/node.xml" parse="xml"/>
 
-        <topic>
-            <qualifier>ALLOW</qualifier>
+        <topic qualifier="ALLOW">
             <attachment>/chatter</attachment>
             <permissions>
                 <subscribe/>
