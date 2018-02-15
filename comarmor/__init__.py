@@ -30,7 +30,7 @@ import os
 import shutil
 
 
-def parse_profile(path):
+def parse_profiles(paths):
     """
     Parse profile from path.
 
@@ -43,16 +43,20 @@ def parse_profile(path):
     """
     import os
 
-    if os.path.isfile(path):
-        paths = [path]
-    elif os.path.exists(path):
-        paths = profiles_in(path)
-        if not paths:
-            raise IOError("Directory '%s' does not contain comarmor profiles" % (path))
-    else:
-        raise IOError("Path '%s' is neither a directory nor a file" % (path))
+    profile_paths = []
+    for path in paths:
+        if os.path.isfile(path):
+            profile_paths.append(path)
+        elif os.path.exists(path):
+            temp_paths = profiles_in(path)
+            if not paths:
+                raise IOError("Directory '%s' does not contain comarmor profiles" % (path))
+            else:
+                profile_paths.extend(temp_paths)
+        else:
+            raise IOError("Path '%s' is neither a directory nor a file" % (path))
 
-    return parse_profile_paths(paths)
+    return parse_profile_paths(profile_paths)
 
 
 def profiles_in(path):
@@ -111,6 +115,7 @@ def parse_profile_paths(paths):
     for path in paths:
         try:
             # TODO simplify this xinclude workarround
+            # https://bugs.python.org/issue20928
             tree = etree.parse(path)
             tree.xinclude()
             data = etree.tostring(tree)
