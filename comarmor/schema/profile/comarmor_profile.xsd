@@ -20,6 +20,7 @@
                 <xs:element name="profile" type="ProfileType" />
                 <xs:element name="topic" type="TopicRuleType" />
                 <xs:element name="ros_topic" type="ROSTopicRuleType" />
+                <xs:element name="ros_service" type="ROSServiceRuleType" />
             </xs:choice>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required" />
@@ -72,7 +73,7 @@
 
     <xs:complexType name="ROSTopicRuleType">
         <xs:sequence>
-            <xs:element name="attachment" type="ROSTopicAttachmentKind" />
+            <xs:element name="attachment" type="ROSAttachmentKind" />
             <xs:element name="permissions" type="ROSTopicPermissionKind" />
         </xs:sequence>
         <xs:attribute name="qualifier" type="QualifierKind" use="required" />
@@ -88,7 +89,24 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:simpleType name="ROSTopicAttachmentKind">
+    <xs:complexType name="ROSServiceRuleType">
+        <xs:sequence>
+            <xs:element name="attachment" type="ROSAttachmentKind" />
+            <xs:element name="permissions" type="ROSServicePermissionKind" />
+        </xs:sequence>
+        <xs:attribute name="qualifier" type="QualifierKind" use="required" />
+        <xs:attribute name="modifier" type="ModifierKind" />
+        <xs:attribute ref="xml:base" />
+    </xs:complexType>
+
+    <xs:complexType name="ROSServicePermissionKind">
+        <xs:sequence>
+            <xs:element name="ros_call" minOccurs="0" maxOccurs="1" />
+            <xs:element name="ros_execute" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="ROSAttachmentKind">
         <xs:restriction base="xs:string">
             <!-- <xs:pattern value="[0-9]{5}(-[0-9]{4})?"/> -->
         </xs:restriction>
