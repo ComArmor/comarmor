@@ -9,6 +9,7 @@
 
   <build_depend>python3-setuptools</build_depend>
 
+  <exec_depend>python3-lxml</exec_depend>
   <exec_depend>python3-xmlschema</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
