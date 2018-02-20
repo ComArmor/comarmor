@@ -1,13 +1,9 @@
-# ------------------------------------------------------------------
+# Copyright 2012 Canonical Ltd.
+# Copyright 2013 Kshitij Gupta <kgupta8592@gmail.com>
 #
-#    Copyright (C) 2012 Canonical Ltd.
-#    Copyright (C) 2013 Kshitij Gupta <kgupta8592@gmail.com>
-#
-#    This program is free software; you can redistribute it and/or
-#    modify it under the terms of version 2 of the GNU General Public
-#    License published by the Free Software Foundation.
-#
-# ------------------------------------------------------------------
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of version 2 of the GNU General Public
+# License published by the Free Software Foundation.
 
 
 import re
