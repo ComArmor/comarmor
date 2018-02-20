@@ -27,7 +27,6 @@ except ImportError:
     __version__ = 'unset'
 
 import os
-import shutil
 
 
 def parse_profiles(paths):
@@ -41,8 +40,6 @@ def parse_profiles(paths):
     :raises: :exc:`InvalidProfile`
     :raises: :exc:`IOError`
     """
-    import os
-
     profile_paths = []
     for path in paths:
         if os.path.isfile(path):
@@ -61,17 +58,16 @@ def parse_profiles(paths):
 
 def profiles_in(path):
     """
-    Finds all profiles that exists at the given path.
+    Find all profiles that exists at the given path.
 
     :param path: path to profiles
     :type path: str
     :returns: list of paths to profiles
     :rtype: list
     """
-    import os
     paths = []
     for file in os.listdir(path):
-        if file.endswith(".xml"):
+        if file.endswith('.xml'):
             paths.append(os.path.join(path, file))
 
     return paths
@@ -128,7 +124,7 @@ def parse_profile_paths(paths):
         except InvalidProfile as e:
             e.args = [
                 "Invalid profile manifest '%s': %s" %
-                (filename, e)]
+                (path, e)]
             raise
         profile = Profile(path=path, tree=profile_tree)
         profile_storage.append(profile)

@@ -12,6 +12,7 @@
 
 import re
 
+
 def convert_regexp(regexp):
     regex_paren = re.compile('^(.*){([^}]*)}(.*)$')
     regexp = regexp.strip()
@@ -28,7 +29,6 @@ def convert_regexp(regexp):
 
     multi_glob = '__KJHDKVZH_AAPROF_INTERNAL_GLOB_SVCUZDGZID__'
     new_reg = new_reg.replace('**', multi_glob)
-    #print(new_reg)
 
     # Match atleast one character if * or ** after /
     # ?< is the negative lookback operator

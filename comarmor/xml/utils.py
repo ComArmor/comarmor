@@ -33,6 +33,7 @@ def pretty_xml(element):
     xmlstr = minidom.parseString(xmlstr).toprettyxml(indent='    ', newl='\n', encoding='utf-8')
     return xmlstr.decode('utf-8')
 
+
 def beautify_xml(elemnt):
     tidy_elemnt = tidy_xml(elemnt)
     pretty_elemnt = pretty_xml(tidy_elemnt)

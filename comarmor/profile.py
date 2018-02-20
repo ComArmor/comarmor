@@ -14,36 +14,23 @@
 
 import copy
 import re
-
 from collections.abc import MutableSequence
 from xml.etree import ElementTree
 
-from .exceptions import InvalidProfile
 from .xml.regex import convert_regexp
 
 
 def filter_rec(node, element, func):
+    """Filter recursively all attachable comarmor profile."""
     for item in node.findall(element):
         if func(item):
             node.remove(item)
         else:
             filter_rec(item, element, func)
 
-# def find_rec(node, element):
-#     for item in node.findall(element):
-#         yield item
-#         for child in find_rec(item, element):
-#             yield child
-
-# def filter_rules(rules, kind=None, qualifier=None):
-#     filtered_rules = ElementTree.Element('rules')
-#
-#     rules.extend(profile.extract_rules(kind))
-#     return filtered_rules
-
 
 class Profile:
-    """Object representation of comarmor profile"""
+    """Object representation of comarmor profile."""
 
     __slots__ = [
         'path',
@@ -87,7 +74,7 @@ class Profile:
     def extract_rules(self, kind):
         root = self.tree.getroot()
         rules = ElementTree.Element('rules')
-        rules.extend(root.findall(".//{}".format(kind)))
+        rules.extend(root.findall('.//{}'.format(kind)))
         return rules
 
     def findall(self, path, namespaces=None):
@@ -116,7 +103,6 @@ class ProfileStorage(MutableSequence):
         if unknown:
             raise TypeError('Unknown properties: %s' % ', '.join(unknown))
 
-
         super().__init__()
 
     def __getitem__(self, key):
@@ -132,7 +118,7 @@ class ProfileStorage(MutableSequence):
         self.profiles.__setitem__(key, value)
 
     def insert(self, key, value):
-        self.profiles.insert(key,value)
+        self.profiles.insert(key, value)
 
     def __str__(self):
         data = {}
