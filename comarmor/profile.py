@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from collections.abc import MutableSequence
 import copy
 import re
-from collections.abc import MutableSequence
 from xml.etree import ElementTree
 
 from .xml.regex import convert_regexp
@@ -85,7 +85,7 @@ class Profile:
 
 
 class ProfileStorage(MutableSequence):
-    """Object representation of comarmor profiles"""
+    """Object representation of comarmor profiles."""
 
     __slots__ = [
         'profiles',
