@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<profile name="My Logger Profile" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <attachment>/logger</attachment>
+
+    <topic qualifier="ALLOW">
+        <attachment>/rosout</attachment>
+        <permissions>
+            <publish/>
+            <subscribe/>
+        </permissions>
+    </topic>
+
+    <topic qualifier="ALLOW">
+        <attachment>/rosout_agg</attachment>
+        <permissions>
+            <publish/>
+        </permissions>
+    </topic>
+</profile>

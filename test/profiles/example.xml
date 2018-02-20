@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<profiles xmlns:xi="http://www.w3.org/2001/XInclude">
+    <xi:include href="tunables/global.xml" parse="xml"/>
+    <profile name="My Talker Profile">
+        <attachment>/talker</attachment>
+        <xi:include href="tunables/node.xml" parse="xml"/>
+
+        <topic qualifier="ALLOW">
+            <attachment>/chatter</attachment>
+            <permissions>
+                <publish/>
+                <subscribe/>
+            </permissions>
+        </topic>
+    </profile>
+
+    <profile name="My Listener Profile">
+        <attachment>/listener</attachment>
+        <xi:include href="tunables/node.xml" parse="xml"/>
+
+        <topic qualifier="ALLOW">
+            <attachment>/chatter</attachment>
+            <permissions>
+                <subscribe/>
+            </permissions>
+        </topic>
+    </profile>
+</profiles>

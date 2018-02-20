@@ -1,0 +1,21 @@
+language: python
+python:
+  - "3.5"
+sudo: false
+install:
+# Install runtime dependencies from PyPI
+  - pip install xmlschema
+# Install dependent comarmor packages from git
+# Install test dependencies from PyPI
+  - pip install nose
+  - pip install flake8 pydocstyle
+# Install ament_copyright / ament_flake8 / ament_pep257 from git
+  - cd /tmp
+  - pip install --editable 'git+git://github.com/ament/ament_lint.git@master#egg=ament_copyright&subdirectory=ament_copyright'
+  - pip install --editable 'git+git://github.com/ament/ament_lint.git@master#egg=ament_flake8&subdirectory=ament_flake8'
+  - pip install --editable 'git+git://github.com/ament/ament_lint.git@master#egg=ament_pep257&subdirectory=ament_pep257'
+script:
+  - cd $TRAVIS_BUILD_DIR
+  - python setup.py nosetests --nocapture
+notifications:
+  email: false
