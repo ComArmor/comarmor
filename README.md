@@ -8,7 +8,7 @@
 Comarmor is a configuration language for defining Mandatory Access Control (MAC) policies for communication graphs. comarmor is akin to other MAC systems, yet instead of defining policy profiles for Linux security modules like with [`AppArmor`](https://gitlab.com/apparmor), [`comarmor`](https://github.com/comarmor) defines policy profiles for armoring communications, as the project name's alteration plays upon. comarmor provides users a pluggable configuration language for specifying permissions and governances between objects and subjects by way of attachment expressions, hierarchal structures, and nested importation of compositional profiles, enabling procedurally generated artifacts via [`keymint_tools`](https://github.com/keymint/keymint_tools) for deployments using SROS, or Secure DDS plugins.
 
 
-## Instillation
+## Installation
 
 To install comarmor, the following dependencies must be satisfied:
 
