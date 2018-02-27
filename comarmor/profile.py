@@ -126,7 +126,7 @@ class ProfileStorage(MutableSequence):
             data[attr] = getattr(self, attr)
         return str(data)
 
-    def filter_profiles(self, key):
+    def filter_profile(self, key):
         profile_storage = copy.deepcopy(self)
         for i in reversed(range(len(profile_storage))):
             profile_storage[i] = profile_storage[i].filter_profile(key)

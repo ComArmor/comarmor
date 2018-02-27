@@ -114,7 +114,7 @@ def get_permissions(G, subject_name, object_name):
 def check_edges_from_profile(profile, G):
     subjects = [(n, v) for n, v in G.nodes(data=True) if v['type'] == 'subject']
     for subject_name, subject_values in subjects:
-        subject_profile = profile.filter_profiles(subject_name).findall('./profile')
+        subject_profile = profile.filter_profile(subject_name).findall('./profile')
         object_names = G.to_undirected().neighbors(subject_name)
         for object_name in object_names:
             object_values = G.node[object_name]
