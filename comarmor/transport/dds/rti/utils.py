@@ -127,7 +127,7 @@ def scrape_objects(objects_, datas, mode):
 
 
 def get_profile_from_discovery(discovery):
-    profile = ElementTree.Element('profile')
+    profile = ElementTree.Element('profiles')
     domain_participants = discovery.findall(
         "processes/value/element/domain_participants")
     for domain_participant in domain_participants:
