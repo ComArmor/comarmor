@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from collections import defaultdict
-from xml.etree import ElementTree
+from xml.etree import cElementTree as ElementTree
 
 
 def nested_dict():

@@ -16,7 +16,7 @@ import re
 
 from comarmor.xml.regex import convert_regexp
 
-# import xml.etree.ElementTree as ElementTree
+# from xml.etree import cElementTree as ElementTree
 # import networkx as nx
 
 

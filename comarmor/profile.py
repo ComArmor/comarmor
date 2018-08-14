@@ -15,7 +15,7 @@
 from collections.abc import MutableSequence
 import copy
 import re
-from xml.etree import ElementTree
+from xml.etree import cElementTree as ElementTree
 
 from .xml.regex import convert_regexp
 

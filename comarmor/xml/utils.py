@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from xml.dom import minidom
-import xml.etree.ElementTree as ElementTree
+from xml.etree import cElementTree as ElementTree
 
 
 def tidy_xml(element):

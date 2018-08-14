@@ -28,6 +28,10 @@ except ImportError:
 
 import os
 
+from xml.etree import cElementTree as ElementTree
+from lxml import etree
+import xmlschema
+
 
 def parse_profiles(paths):
     """
@@ -94,9 +98,6 @@ def parse_profile_paths(paths):
     :returns: return parsed :class:`ProfileStorage`
     :raises: :exc:`InvalidProfile`
     """
-    import xmlschema
-    from lxml import etree
-    from xml.etree import ElementTree
 
     from .profile import Profile, ProfileStorage
     from .schemas import get_profile_schema_path
