@@ -49,7 +49,7 @@
 
     <xs:complexType name="TopicRuleType">
         <xs:sequence>
-            <xs:element name="attachment" type="TopicAttachmentKind" />
+            <xs:element name="attachments" type="ROSAttachmentsKind" />
             <xs:element name="permissions" type="TopicPermissionKind" />
         </xs:sequence>
         <xs:attribute name="qualifier" type="QualifierKind" use="required" />
@@ -73,7 +73,7 @@
 
     <xs:complexType name="ROSTopicRuleType">
         <xs:sequence>
-            <xs:element name="attachment" type="ROSAttachmentKind" />
+            <xs:element name="attachments" type="ROSAttachmentsKind" />
             <xs:element name="permissions" type="ROSTopicPermissionKind" />
         </xs:sequence>
         <xs:attribute name="qualifier" type="QualifierKind" use="required" />
@@ -91,7 +91,7 @@
 
     <xs:complexType name="ROSServiceRuleType">
         <xs:sequence>
-            <xs:element name="attachment" type="ROSAttachmentKind" />
+            <xs:element name="attachments" type="ROSAttachmentsKind" />
             <xs:element name="permissions" type="ROSServicePermissionKind" />
         </xs:sequence>
         <xs:attribute name="qualifier" type="QualifierKind" use="required" />
@@ -103,6 +103,12 @@
         <xs:sequence>
             <xs:element name="ros_call" minOccurs="0" maxOccurs="1" />
             <xs:element name="ros_execute" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ROSAttachmentsKind">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="attachment" type="ROSAttachmentKind" />
         </xs:sequence>
     </xs:complexType>
 
