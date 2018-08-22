@@ -16,10 +16,6 @@ from collections import defaultdict
 from xml.etree import cElementTree as ElementTree
 
 
-def nested_dict():
-    return defaultdict(nested_dict)
-
-
 def rchop(thestring, ending):
     if thestring.endswith(ending):
         return thestring[:-len(ending)]
@@ -50,7 +46,7 @@ object_mapping = {
     'rr': 'ros_service',
 }
 
-partition_mapping = {
+prefix_mapping = {
     'rt': 'ros_topic',
     'rq': 'ros_request',
     'rr': 'ros_reply',
@@ -66,92 +62,195 @@ mode_mapping = {
 }
 
 
-def remap(partition, topic):
-    namespace = partition[2:]
-    if namespace:
-        return '/'.join([namespace, topic])
-    else:
-        return '/' + topic
-
-
-def create_permission(permission_mode):
-    permission = ElementTree.Element(permission_mode)
-    return permission
-
-
-def create_permissions(object_type, object_name_data):
-    permissions = ElementTree.Element('permissions')
-    permission_modes = set()
-    for dds_mode, ros_mode in object_name_data.items():
-        permission_modes.add(mode_mapping[dds_mode][ros_mode])
-    permission_modes = sorted(permission_modes)
-    for permission_mode in permission_modes:
-        permission = create_permission(permission_mode)
-        permissions.append(permission)
+def get_permissions(rule):
+    permissions = rule.find('permissions')
+    if permissions is None:
+        permissions = ElementTree.Element('permissions')
+        rule.append(permissions)
     return permissions
 
 
-def creat_rule(object_type, attachment, permissions, qualifier, modifier=None):
-    rule = ElementTree.Element(object_type)
-    rule.set('qualifier', qualifier)
-    if modifier:
-        rule.set('modifier', modifier)
-    rule.append(attachment)
-    rule.append(permissions)
-    return rule
+def set_permissions(rule, permission_mode):
+    permissions = get_permissions(rule)
+    for permission in permissions:
+        if permission.tag == permission_mode:
+            return
+    else:
+        permission = ElementTree.Element(permission_mode)
+        permissions.append(permission)
 
 
-def create_attachment(expression):
-    attachment = ElementTree.Element('attachment')
-    attachment.text = expression
-    return attachment
+def get_attachments(rule):
+    attachments = rule.find('attachments')
+    if attachments is None:
+        attachments = ElementTree.Element('attachments')
+        rule.append(attachments)
+    return attachments
 
 
-def create_profile(name, attachment, modifier=None):
-    profile = ElementTree.Element('profile')
-    profile.set('name', name)
-    if modifier:
-        profile.set('modifier', modifier)
-    profile.append(attachment)
-    return profile
+def set_attachments(rule, object_name):
+    attachments = get_attachments(rule)
+    for attachment in attachments:
+        if attachment.text == object_name:
+            return
+    else:
+        attachment = ElementTree.Element('attachment')
+        attachment.text = object_name
+        attachments.append(attachment)
 
 
-def scrape_objects(objects_, datas, mode):
+def get_rule(profile, object_type, object_name, qualifier):
+    rules = profile.findall(object_type)
+    for rule in rules:
+        attachment = rule.findtext('attachments/attachment')
+        if attachment == object_name and rule.get('qualifier') == qualifier:
+            return rule
+    else:
+        rule = ElementTree.Element(object_type)
+        rule.set('qualifier', qualifier)
+        set_attachments(rule, object_name)
+        profile.append(rule)
+        return rule
+
+
+def set_rule(profile, object_type, object_name, permission_mode, qualifier):
+    rule = get_rule(profile, object_type, object_name, qualifier)
+    set_permissions(rule, permission_mode)
+
+
+def set_rules(profile, datas, dds_mode, qualifier):
     for data in datas:
-        topic_name = data.findtext("topic_name")  # Could be multiple topics?
-        partition_name = data.findtext("partition/name/element")  # Could be multiple partitions?
-        ros_mode = partition_name[0:2]
+        topic_name = data.findtext("topic_name")
+        ros_mode = topic_name[0:2]
         object_type = object_mapping[ros_mode]
-        object_name = object_naming[ros_mode](remap(partition_name, topic_name))
-        objects_[object_type][object_name][mode] = partition_mapping[ros_mode]
+        object_name = object_naming[ros_mode](topic_name[2:])
+        permission_mode = mode_mapping[dds_mode][prefix_mapping[ros_mode]]
+        set_rule(profile, object_type, object_name, permission_mode, qualifier)
+
+
+def set_attachment(profile, expression):
+    attachment = profile.find('attachment')
+    if attachment is None:
+        attachment = ElementTree.Element('attachment')
+        attachment.text = expression
+        profile.append(attachment)
+    else:
+        attachment.text = expression
+
+
+def get_profile(root, name):
+    profiles = root.findall('profile')
+    for profile in profiles:
+        if profile.get('name') == name:
+            return profile
+    else:
+        profile = ElementTree.Element('profile')
+        profile.set('name', name)
+        root.append(profile)
+        return profile
+
+
+def compatible_permissions(rule, compressed_rule):
+    permissions = rule.find('permissions')
+    compressed_permissions = compressed_rule.find('permissions')
+    if not permissions == compressed_permissions:
+        if compressed_permissions is None:
+            return False
+        else:
+            permissions = [i.tag for i in permissions.iter()]
+            compressed_permissions = [i.tag for i in compressed_permissions.iter()]
+            if not set(permissions) == set(compressed_permissions):
+                return False
+    return True
+
+
+def compress_profile(profile):
+    compressed_profile = ElementTree.Element('profile')
+    compressed_profile.set('name', profile.get('name'))
+
+    for rule in list(profile):
+        compressed_rules = compressed_profile.findall(rule.tag)
+        if compressed_rules is None:
+            compressed_profile.append(rule)
+        else:
+            for compressed_rule in compressed_rules:
+                if compatible_permissions(rule, compressed_rule):
+                    attachments = rule.find('attachments')
+                    compressed_attachments = compressed_rule.find('attachments')
+                    compressed_attachments.extend(attachments)
+                    break
+            else:
+                compressed_profile.append(rule)
+
+    return compressed_profile
+
+
+def compress_profiles(profiles):
+    compressed_profiles = ElementTree.Element('profiles')
+    for profile in list(profiles):
+        compressed_profile = compress_profile(profile)
+        compressed_profiles.append(compressed_profile)
+    return compressed_profiles
+
+
+def sort_by_text(parent):
+    try:
+        parent[:] = sorted(parent, key=lambda child: child.text)
+    except:
+        pass
+
+
+def sort_by_tag(parent):
+    try:
+        parent[:] = sorted(parent, key=lambda child: child.tag)
+    except:
+        pass
+
+
+def sort_by_name(parent):
+    try:
+        parent[:] = sorted(parent, key=lambda child: child.get('name'))
+    except:
+        pass
+
+
+def sort_by_attachment(parent):
+    try:
+        parent[:] = sorted(parent, key=lambda child: (
+            child.tag != 'attachment',
+            child.findtext('attachments/attachment')))
+    except:
+        pass
+
+
+def sort_profiles(profiles):
+    for i in profiles.iter():
+        sort_by_text(i)
+    for i in profiles.iter():
+        sort_by_tag(i)
+    for i in profiles.iter():
+        sort_by_name(i)
+    for i in profiles.iter():
+        sort_by_attachment(i)
 
 
 def get_profile_from_discovery(discovery):
-    profile = ElementTree.Element('profiles')
+    profiles = ElementTree.Element('profiles')
     domain_participants = discovery.findall(
-        "processes/value/element/domain_participants")
+        "processes/value/element/domain_participants/value/element")
     for domain_participant in domain_participants:
-        participant_datas = domain_participant.findall("value/element")
-        for participant_data in participant_datas:
-            subject_name = '/' + participant_data.findtext(
-                "participant_data/participant_name/name")
-            attachment = create_attachment(subject_name)
-            sub_profile = create_profile(subject_name, attachment)
+        subject_name = '/' + domain_participant.findtext(
+            "participant_data/participant_name/name")
+        profile = get_profile(profiles, subject_name)
+        set_attachment(profile, subject_name)
 
-            object_types = nested_dict()
-            publication_datas = participant_data.findall(
-                "publications/value/element/publication_data")
-            scrape_objects(object_types, publication_datas, 'publication')
-            subscription_datas = participant_data.findall(
-                "subscriptions/value/element/subscription_data")
-            scrape_objects(object_types, subscription_datas, 'subscription')
+        publication_datas = domain_participant.findall(
+            "publications/value/element/publication_data")
+        set_rules(profile, publication_datas, 'publication', 'ALLOW')
+        subscription_datas = domain_participant.findall(
+            "subscriptions/value/element/subscription_data")
+        set_rules(profile, subscription_datas, 'subscription', 'ALLOW')
 
-            for object_type, object_type_data in object_types.items():
-                for object_name, object_name_data in object_type_data.items():
-                    attachment = create_attachment(object_name)
-                    permissions = create_permissions(object_type, object_name_data)
-                    qualifer = 'ALLOW'
-                    rule = creat_rule(object_type, attachment, permissions, qualifer)
-                    sub_profile.append(rule)
-            profile.append(sub_profile)
-    return profile
+    profiles = compress_profiles(profiles)
+    sort_profiles(profiles)
+    return profiles
