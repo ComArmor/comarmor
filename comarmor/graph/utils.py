@@ -71,24 +71,26 @@ def add_edges_from_profile(profile, G):
         elif element.tag in ['attachment']:
             pass
         else:
-            subject_ = profile.find('./attachment').text
-            object_ = element.find('./attachment').text
-            G.add_node(subject_, type='subject', kind='subject',
-                       color=colors[profile.tag], style='filled', fontcolor='white')
-            G.add_node(object_,  type='object', kind=element.tag,
-                       color=colors[element.tag], style='filled', fontcolor='white')
-            for permission in element.find('./permissions'):
-                u, v = directions[permission.tag](subject_, object_)
-                G.add_edge(u, v, label=permission.tag, color=colors[permission.tag])
+            subject_ = profile.find('attachment').text
+            attachments = element.find('attachments')
+            for attachment in attachments:
+                object_ = attachment.text
+                G.add_node(subject_, type='subject', kind='subject',
+                           color=colors[profile.tag], style='filled', fontcolor='white')
+                G.add_node(object_,  type='object', kind=element.tag,
+                           color=colors[element.tag], style='filled', fontcolor='white')
+                for permission in list(element.find('permissions')):
+                    u, v = directions[permission.tag](subject_, object_)
+                    G.add_edge(u, v, label=permission.tag, color=colors[permission.tag])
 
 
 def check_rule(rule, object_name, permission):
-    attachment = rule.find('attachment').text
-    patern = re.compile(convert_regexp(attachment))
-    if patern.match(object_name):
-        match = rule.find('permissions/' + permission)
-        if match is not None:
-            return rule
+    for attachment in rule.findall('attachments/attachment'):
+        patern = re.compile(convert_regexp(attachment.text))
+        if patern.match(object_name):
+            match = rule.find('permissions/' + permission)
+            if match is not None:
+                return rule
     return None
 
 
