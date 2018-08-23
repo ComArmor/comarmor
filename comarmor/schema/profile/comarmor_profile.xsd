@@ -15,7 +15,7 @@
 
     <xs:complexType name="ProfileType">
         <xs:sequence minOccurs="1" maxOccurs="1">
-            <xs:element name="attachment" type="ProfileAttachmentKind" />
+            <xs:element name="attachments" type="ProfileAttachmentsKind" />
             <xs:choice minOccurs="1" maxOccurs="unbounded">
                 <xs:element name="profile" type="ProfileType" />
                 <xs:element name="topic" type="TopicRuleType" />
@@ -26,6 +26,12 @@
         <xs:attribute name="name" type="xs:string" use="required" />
         <xs:attribute name="modifier" type="ModifierKind" />
         <xs:attribute ref="xml:base" />
+    </xs:complexType>
+
+    <xs:complexType name="ProfileAttachmentsKind">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="attachment" type="ProfileAttachmentKind" />
+        </xs:sequence>
     </xs:complexType>
 
     <xs:simpleType name="ProfileAttachmentKind">

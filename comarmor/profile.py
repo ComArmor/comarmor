@@ -14,16 +14,15 @@
 
 from collections.abc import MutableSequence
 import copy
+import fnmatch
 import re
 from xml.etree import cElementTree as ElementTree
-
-from .xml.regex import convert_regexp
 
 
 def filter_rec(node, element, func):
     """Filter recursively all attachable comarmor profile."""
     for item in node.findall(element):
-        if func(item):
+        if not func(item):
             node.remove(item)
         else:
             filter_rec(item, element, func)
@@ -63,9 +62,12 @@ class Profile:
         root = filtered_profile.tree.getroot()
 
         def filter_func(node):
-            attachment = node.find('attachment').text
-            patern = re.compile(convert_regexp(attachment))
-            return not patern.match(key)
+            for attachment in node.findall('attachments/attachment'):
+                patern = re.compile(fnmatch.translate(attachment.text))
+                if patern.match(key):
+                    return True
+            else:
+                return False
 
         filter_rec(node=root, element='profile', func=filter_func)
 

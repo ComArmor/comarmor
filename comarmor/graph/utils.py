@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import fnmatch
 import re
-
-from comarmor.xml.regex import convert_regexp
 
 # from xml.etree import cElementTree as ElementTree
 # import networkx as nx
@@ -86,12 +85,13 @@ def add_edges_from_profile(profile, G):
 
 def check_rule(rule, object_name, permission):
     for attachment in rule.findall('attachments/attachment'):
-        patern = re.compile(convert_regexp(attachment.text))
+        patern = re.compile(fnmatch.translate(attachment.text))
         if patern.match(object_name):
             match = rule.find('permissions/' + permission)
             if match is not None:
                 return rule
-    return None
+    else:
+        return None
 
 
 def check_rules(rules, object_name, permission):
