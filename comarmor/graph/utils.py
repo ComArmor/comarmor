@@ -64,23 +64,23 @@ def get_all_subjects_from_profile(profile):
 
 
 def add_edges_from_profile(profile, G):
-    for element in profile.findall('./*'):
+    for element in list(profile):
         if element.tag == 'profile':
             add_edges_from_profile(element, G)
         elif element.tag in ['attachment']:
             pass
         else:
-            subject_ = profile.find('attachment').text
-            attachments = element.find('attachments')
-            for attachment in attachments:
-                object_ = attachment.text
-                G.add_node(subject_, type='subject', kind='subject',
-                           color=colors[profile.tag], style='filled', fontcolor='white')
-                G.add_node(object_,  type='object', kind=element.tag,
-                           color=colors[element.tag], style='filled', fontcolor='white')
-                for permission in list(element.find('permissions')):
-                    u, v = directions[permission.tag](subject_, object_)
-                    G.add_edge(u, v, label=permission.tag, color=colors[permission.tag])
+            for subject in profile.findall('attachments/attachment'):
+                subject_name = subject.text
+                for object in element.findall('attachments/attachment'):
+                    object_name = object.text
+                    G.add_node(subject_name, type='subject', kind='subject',
+                               color=colors[profile.tag], style='filled', fontcolor='white')
+                    G.add_node(object_name,  type='object', kind=element.tag,
+                               color=colors[element.tag], style='filled', fontcolor='white')
+                    for permission in list(element.find('permissions')):
+                        u, v = directions[permission.tag](subject_name, object_name)
+                        G.add_edge(u, v, label=permission.tag, color=colors[permission.tag])
 
 
 def check_rule(rule, object_name, permission):

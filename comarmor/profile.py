@@ -48,6 +48,12 @@ class Profile:
         if unknown:
             raise TypeError('Unknown properties: %s' % ', '.join(unknown))
 
+    def __len__(self):
+        return self.tree.getroot().__len__()
+
+    def __getitem__(self, index):
+        return self.tree.getroot().__getitem__(index)
+
     def __str__(self):
         data = {}
         for attr in self.__slots__:

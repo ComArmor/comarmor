@@ -128,16 +128,6 @@ def set_rules(profile, datas, dds_mode, qualifier):
         set_rule(profile, object_type, object_name, permission_mode, qualifier)
 
 
-def set_attachment(profile, expression):
-    attachment = profile.find('attachment')
-    if attachment is None:
-        attachment = ElementTree.Element('attachment')
-        attachment.text = expression
-        profile.append(attachment)
-    else:
-        attachment.text = expression
-
-
 def get_profile(root, name):
     profiles = root.findall('profile')
     for profile in profiles:
@@ -217,7 +207,7 @@ def sort_by_name(parent):
 def sort_by_attachment(parent):
     try:
         parent[:] = sorted(parent, key=lambda child: (
-            child.tag != 'attachment',
+            child.tag != 'attachments',
             child.findtext('attachments/attachment')))
     except:
         pass
@@ -242,7 +232,7 @@ def get_profile_from_discovery(discovery):
         subject_name = '/' + domain_participant.findtext(
             "participant_data/participant_name/name")
         profile = get_profile(profiles, subject_name)
-        set_attachment(profile, subject_name)
+        set_attachments(profile, subject_name)
 
         publication_datas = domain_participant.findall(
             "publications/value/element/publication_data")
