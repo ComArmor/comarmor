@@ -29,7 +29,8 @@ except ImportError:
 import os
 
 from xml.etree import cElementTree as ElementTree
-from lxml import etree
+from .xml import ElementInclude
+
 import xmlschema
 
 
@@ -111,12 +112,10 @@ def parse_profile_paths(paths):
 
     for path in paths:
         try:
-            # TODO simplify this xinclude workarround
+            # simplify this xinclude workarround
             # https://bugs.python.org/issue20928
-            tree = etree.parse(path)
-            tree.xinclude()
-            data = etree.tostring(tree)
-            root = ElementTree.fromstring(data)
+            root = ElementTree.parse(path).getroot()
+            ElementInclude.include(root, base_url=path)
             clean_root = utils.beautify_xml(root)
             data = ElementTree.fromstring(clean_root)
 
