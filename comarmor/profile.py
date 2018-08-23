@@ -77,6 +77,10 @@ class Profile:
 
         filter_rec(node=root, element='profile', func=filter_func)
 
+        # Format all "{name}" occurrences in object attachments
+        for attachment in root.findall('.//*/attachments/attachment'):
+            attachment.text = attachment.text.format(name=key)
+
         return filtered_profile
 
     def extract_rules(self, kind):
