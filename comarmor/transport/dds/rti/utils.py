@@ -14,6 +14,8 @@
 
 from xml.etree import cElementTree as ElementTree
 
+from comarmor.xml.helpers import sort_profiles, compress_profiles
+
 
 def rchop(thestring, ending):
     if thestring.endswith(ending):
@@ -137,90 +139,6 @@ def get_profile(root, name):
         profile.set('name', name)
         root.append(profile)
         return profile
-
-
-def compatible_permissions(rule, compressed_rule):
-    permissions = rule.find('permissions')
-    compressed_permissions = compressed_rule.find('permissions')
-    if not permissions == compressed_permissions:
-        if compressed_permissions is None:
-            return False
-        else:
-            permissions = [i.tag for i in permissions.iter()]
-            compressed_permissions = [i.tag for i in compressed_permissions.iter()]
-            if not set(permissions) == set(compressed_permissions):
-                return False
-    return True
-
-
-def compress_profile(profile):
-    compressed_profile = ElementTree.Element('profile')
-    compressed_profile.set('name', profile.get('name'))
-
-    for rule in list(profile):
-        compressed_rules = compressed_profile.findall(rule.tag)
-        if compressed_rules is None:
-            compressed_profile.append(rule)
-        else:
-            for compressed_rule in compressed_rules:
-                if compatible_permissions(rule, compressed_rule):
-                    attachments = rule.find('attachments')
-                    compressed_attachments = compressed_rule.find('attachments')
-                    compressed_attachments.extend(attachments)
-                    break
-            else:
-                compressed_profile.append(rule)
-
-    return compressed_profile
-
-
-def compress_profiles(profiles):
-    compressed_profiles = ElementTree.Element('profiles')
-    for profile in list(profiles):
-        compressed_profile = compress_profile(profile)
-        compressed_profiles.append(compressed_profile)
-    return compressed_profiles
-
-
-def sort_by_text(parent):
-    try:
-        parent[:] = sorted(parent, key=lambda child: child.text)
-    except:
-        pass
-
-
-def sort_by_tag(parent):
-    try:
-        parent[:] = sorted(parent, key=lambda child: child.tag)
-    except:
-        pass
-
-
-def sort_by_name(parent):
-    try:
-        parent[:] = sorted(parent, key=lambda child: child.get('name'))
-    except:
-        pass
-
-
-def sort_by_attachment(parent):
-    try:
-        parent[:] = sorted(parent, key=lambda child: (
-            child.tag != 'attachments',
-            child.findtext('attachments/attachment')))
-    except:
-        pass
-
-
-def sort_profiles(profiles):
-    for i in profiles.iter():
-        sort_by_text(i)
-    for i in profiles.iter():
-        sort_by_tag(i)
-    for i in profiles.iter():
-        sort_by_name(i)
-    for i in profiles.iter():
-        sort_by_attachment(i)
 
 
 def get_profile_from_discovery(discovery):
