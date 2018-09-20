@@ -27,6 +27,11 @@ def filter_rec(node, element, func):
         else:
             filter_rec(item, element, func)
 
+def namespace_split(fqn):
+    namespace, name = fqn.rsplit('/', 1)
+    if not namespace:
+        namespace = '/'
+    return namespace, name
 
 class Profile:
     """Object representation of comarmor profile."""
@@ -77,9 +82,14 @@ class Profile:
 
         filter_rec(node=root, element='profile', func=filter_func)
 
-        # Format all "{name}" occurrences in object attachments
+        # Format all "{name},{namespace}" occurrences in object attachments
+        namespace, name = namespace_split(key)
+        format_args = {
+            'name': name,
+            'namespace': namespace,
+        }
         for attachment in root.findall('.//*/attachments/attachment'):
-            attachment.text = attachment.text.format(name=key)
+            attachment.text = attachment.text.format(**format_args)
 
         return filtered_profile
 
