@@ -29,9 +29,7 @@ def filter_rec(node, element, func):
 
 def namespace_split(fqn):
     namespace, name = fqn.rsplit('/', 1)
-    if not namespace:
-        namespace = '/'
-    return namespace, name
+    return namespace + '/', name
 
 class Profile:
     """Object representation of comarmor profile."""
