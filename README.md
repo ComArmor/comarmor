@@ -39,9 +39,11 @@ comarmor.d/
 ├── example.xml
 ├── example_2.xml
 ├── another_profile_N.xml
-└── tunables
-    ├── global.xml
-    └── node.xml
+└── common
+    ├── node.xml
+    └── node
+        ├── parameters.xml
+        └── time.xml
 
 1 directory, 3 files
 ```
@@ -54,73 +56,95 @@ To add a policy in the root directory, we'll use the comarmor syntax to define a
 <?xml version="1.0" encoding="UTF-8"?>
 
 <profiles xmlns:xi="http://www.w3.org/2001/XInclude">
-    <xi:include href="tunables/global.xml" parse="xml"/>
     <profile name="My Talker Profile">
-        <attachment>/talker</attachment>
-        <xi:include href="tunables/node.xml" parse="xml"/>
+        <attachments>
+            <attachment>*/talker</attachment>
+        </attachments>
+        <xi:include href="common/node.xml" parse="xml" />
 
-        <topic qualifier="ALLOW">
-            <attachment>/chatter</attachment>
+        <ros_topic qualifier="ALLOW">
+            <attachments>
+                <attachment>{namespace}chatter</attachment>
+            </attachments>
             <permissions>
-                <publish/>
+                <ros_publish/>
             </permissions>
-        </topic>
+        </ros_topic>
     </profile>
 
     <profile name="My Listener Profile">
-        <attachment>/listener</attachment>
-        <xi:include href="tunables/node.xml" parse="xml"/>
+        <attachments>
+            <attachment>*/listener</attachment>
+        </attachments>
+        <xi:include href="common/node.xml" parse="xml" />
 
-        <topic qualifier="ALLOW">
-            <attachment>/chatter</attachment>
+        <ros_topic qualifier="ALLOW">
+            <attachments>
+                <attachment>{namespace}chatter</attachment>
+            </attachments>
             <permissions>
-                <subscribe/>
+                <ros_subscribe/>
             </permissions>
-        </topic>
+        </ros_topic>
     </profile>
 </profiles>
+
 ```
 
-The profile above starts by including some additional elements found in the `global` document, which happens to be in a folder named `tunables`. Next a number of profiles are defined. Profiles are given a name, an attachment, and a scope of further permissions and/or sub profiles. The name is simply used to label the profile for the user when debugging. The attachment is used to define types of subjects the profile is applicable for: this can be formated as an expression. An important note for attachments of sub profiles that any expression used in the sub profile should only be expected to be quired if-and-only-if the attachment of the parent profile matches already. I.e. a child profile can only be applicable if the parent profile is applicable as well.
+The profile above starts by including some additional elements found in the `node.xml` document, which happens to be in a folder named `common`. Next a number of profiles are defined. Profiles are given a name, an attachment, and a scope of further permissions and/or sub profiles. The name is simply used to label the profile for the user when debugging. The attachment is used to define types of subjects the profile is applicable for: this can be formated as an expression. An important note for attachments of sub profiles that any expression used in the sub profile should only be expected to be quired if-and-only-if the attachment of the parent profile matches already. I.e. a child profile can only be applicable if the parent profile is applicable as well.
 
 The permissions can be arbitrary to the object they govern, but should specify a type and designate a qualifier. The qualifier can be either `ALLOW` or `DENY` to permit a MAC framework. Conflicting permission applicable to the same subject that govern the same object will alway conservatively resolving to deny. This enable selective revocation of access after say providing perhaps an overly generous permission, e.g. such as a debugger tool publication access to all topics except those for safety critical E-stop signals.
 
-#### `tunables/node.xml`
+#### `common/node.xml`
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 
-<topic qualifier="ALLOW">
-    <attachment>/logout</attachment>
-    <permissions>
-        <publish/>
-    </permissions>
-</topic>
+<profile name="Node" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <attachments>
+        <attachment>*</attachment>
+    </attachments>
+    <xi:include href="node/time.xml" parse="xml" />
+    <xi:include href="node/parameters.xml" parse="xml" />
+</profile>
 ```
 
 Imported elements can be as basic as elements within a profile such as a collection of rules as above, or an entire profile. Presently, this is done simply through the user of [XInclude](https://www.w3.org/TR/xinclude/).
 
-#### `tunables/global.xml`
+#### `common/node/parameters.xml`
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 
-<profile name="My Logger Profile" xmlns:xi="http://www.w3.org/2001/XInclude">
-    <attachment>/logger</attachment>
-    <topic qualifier="ALLOW">
-        <attachment>/logout</attachment>
-        <permissions>
-            <publish/>
-            <subscribe/>
-        </permissions>
-    </topic>
+<profile name="Parameters" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <attachments>
+        <attachment>*</attachment>
+    </attachments>
 
-    <topic qualifier="ALLOW">
-        <attachment>/logout_agg</attachment>
+    <ros_topic qualifier="ALLOW">
+        <attachments>
+            <attachment>{namespace}parameter_events</attachment>
+        </attachments>
         <permissions>
-            <publish/>
+            <ros_publish/>
+            <ros_subscribe/>
         </permissions>
-    </topic>
+    </ros_topic>
+
+    <ros_service qualifier="ALLOW">
+        <attachments>
+            <attachment>{namespace}{name}/describe_parameters</attachment>
+            <attachment>{namespace}{name}/get_parameter_types</attachment>
+            <attachment>{namespace}{name}/get_parameters</attachment>
+            <attachment>{namespace}{name}/list_parameters</attachment>
+            <attachment>{namespace}{name}/set_parameters</attachment>
+            <attachment>{namespace}{name}/set_parameters_atomically</attachment>
+        </attachments>
+        <permissions>
+            <ros_call/>
+            <ros_execute/>
+        </permissions>
+    </ros_service>
 </profile>
 ```
 
