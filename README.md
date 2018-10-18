@@ -2,7 +2,7 @@
 
 [![pypi](https://img.shields.io/pypi/v/comarmor.svg?branch=master)](https://pypi.python.org/pypi/comarmor/)
 [![docs](https://readthedocs.org/projects/comarmor/badge/?version=latest)](https://readthedocs.org/projects/comarmor)
-[![build](https://travis-ci.org/comarmor/comarmor.svg?branch=master)](https://travis-ci.org/comarmor/comarmor)
+[![build](https://travis-ci.org/ComArmor/comarmor.svg?branch=master)](https://travis-ci.org/comarmor/comarmor)
 [![codecov](https://codecov.io/github/comarmor/comarmor/coverage.svg?branch=master)](https://codecov.io/github/comarmor/comarmor?branch=master)
 
 Comarmor is a configuration language for defining Mandatory Access Control (MAC) policies for communication graphs. comarmor is akin to other MAC systems, yet instead of defining policy profiles for Linux security modules like with [`AppArmor`](https://gitlab.com/apparmor), [`comarmor`](https://github.com/comarmor) defines policy profiles for armoring communications, as the project name's alteration plays upon. comarmor provides users a pluggable configuration language for specifying permissions and governances between objects and subjects by way of attachment expressions, hierarchal structures, and nested importation of compositional profiles, enabling procedurally generated artifacts via [`keymint_tools`](https://github.com/keymint/keymint_tools) for deployments using SROS, or Secure DDS plugins.
