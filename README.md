@@ -13,7 +13,6 @@ Comarmor is a configuration language for defining Mandatory Access Control (MAC)
 To install comarmor, the following dependencies must be satisfied:
 
 ``` bash
-pip3 install lxml
 pip3 install xmlschema
 ```
 
