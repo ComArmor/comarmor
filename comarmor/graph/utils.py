@@ -76,7 +76,7 @@ def add_edges_from_profile(profile, G):
                     object_name = object.text
                     G.add_node(subject_name, type='subject', kind='subject',
                                color=colors[profile.tag], style='filled', fontcolor='white')
-                    G.add_node(object_name,  type='object', kind=element.tag,
+                    G.add_node(object_name, type='object', kind=element.tag,
                                color=colors[element.tag], style='filled', fontcolor='white')
                     for permission in list(element.find('permissions')):
                         u, v = directions[permission.tag](subject_name, object_name)

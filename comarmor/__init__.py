@@ -27,11 +27,11 @@ except ImportError:
     __version__ = 'unset'
 
 import os
-
 from xml.etree import cElementTree as ElementTree
-from .xml import ElementInclude
 
 import xmlschema
+
+from .xml import ElementInclude
 
 
 def parse_profiles(paths):
@@ -99,7 +99,6 @@ def parse_profile_paths(paths):
     :returns: return parsed :class:`ProfileStorage`
     :raises: :exc:`InvalidProfile`
     """
-
     from .profile import Profile, ProfileStorage
     from .schemas import get_profile_schema_path
     from .xml import utils

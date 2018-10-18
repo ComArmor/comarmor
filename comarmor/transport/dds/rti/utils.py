@@ -14,7 +14,7 @@
 
 from xml.etree import cElementTree as ElementTree
 
-from comarmor.xml.helpers import sort_profiles, compress_profiles
+from comarmor.xml.helpers import compress_profiles, sort_profiles
 
 
 def rchop(thestring, ending):
@@ -54,11 +54,11 @@ prefix_mapping = {
 }
 
 mode_mapping = {
-    'publication':  {'ros_topic':   'ros_publish',
-                     'ros_request': 'ros_call',
-                     'ros_reply':   'ros_execute'},
-    'subscription': {'ros_topic':   'ros_subscribe',
-                     'ros_reply':   'ros_call',
+    'publication': {'ros_topic': 'ros_publish',
+                    'ros_request': 'ros_call',
+                    'ros_reply': 'ros_execute'},
+    'subscription': {'ros_topic': 'ros_subscribe',
+                     'ros_reply': 'ros_call',
                      'ros_request': 'ros_execute'},
 }
 
@@ -121,7 +121,7 @@ def set_rule(profile, object_type, object_name, permission_mode, qualifier):
 
 def set_rules(profile, datas, dds_mode, qualifier):
     for data in datas:
-        topic_name = data.findtext("topic_name")
+        topic_name = data.findtext('topic_name')
         ros_mode = topic_name[0:2]
         object_type = object_mapping[ros_mode]
         object_name = object_naming[ros_mode](topic_name[2:])
@@ -144,18 +144,18 @@ def get_profile(root, name):
 def get_profile_from_discovery(discovery):
     profiles = ElementTree.Element('profiles')
     domain_participants = discovery.findall(
-        "processes/value/element/domain_participants/value/element")
+        'processes/value/element/domain_participants/value/element')
     for domain_participant in domain_participants:
         subject_name = '/' + domain_participant.findtext(
-            "participant_data/participant_name/name")
+            'participant_data/participant_name/name')
         profile = get_profile(profiles, subject_name)
         set_attachments(profile, subject_name)
 
         publication_datas = domain_participant.findall(
-            "publications/value/element/publication_data")
+            'publications/value/element/publication_data')
         set_rules(profile, publication_datas, 'publication', 'ALLOW')
         subscription_datas = domain_participant.findall(
-            "subscriptions/value/element/subscription_data")
+            'subscriptions/value/element/subscription_data')
         set_rules(profile, subscription_datas, 'subscription', 'ALLOW')
 
     profiles = compress_profiles(profiles)

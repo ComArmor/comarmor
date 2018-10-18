@@ -14,6 +14,7 @@
 
 from xml.etree import cElementTree as ElementTree
 
+
 def compatible_permissions(rule, compressed_rule):
     permissions = rule.find('permissions')
     compressed_permissions = compressed_rule.find('permissions')
