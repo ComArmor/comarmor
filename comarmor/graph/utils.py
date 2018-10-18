@@ -70,10 +70,10 @@ def add_edges_from_profile(profile, G):
         elif element.tag in ['attachment']:
             pass
         else:
-            for subject in profile.findall('attachments/attachment'):
-                subject_name = subject.text
-                for object in element.findall('attachments/attachment'):
-                    object_name = object.text
+            for subject_element in profile.findall('attachments/attachment'):
+                subject_name = subject_element.text
+                for object_element in element.findall('attachments/attachment'):
+                    object_name = object_element.text
                     G.add_node(subject_name, type='subject', kind='subject',
                                color=colors[profile.tag], style='filled', fontcolor='white')
                     G.add_node(object_name, type='object', kind=element.tag,
