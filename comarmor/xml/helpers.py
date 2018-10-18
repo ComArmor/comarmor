@@ -61,21 +61,21 @@ def compress_profiles(profiles):
 def sort_by_text(parent):
     try:
         parent[:] = sorted(parent, key=lambda child: child.text)
-    except:
+    except TypeError:
         pass
 
 
 def sort_by_tag(parent):
     try:
         parent[:] = sorted(parent, key=lambda child: child.tag)
-    except:
-        pass
+    except AttributeError:
+        raise
 
 
 def sort_by_name(parent):
     try:
         parent[:] = sorted(parent, key=lambda child: child.get('name'))
-    except:
+    except TypeError:
         pass
 
 
@@ -84,8 +84,8 @@ def sort_by_attachment(parent):
         parent[:] = sorted(parent, key=lambda child: (
             child.tag != 'attachments',
             child.findtext('attachments/attachment')))
-    except:
-        pass
+    except AttributeError:
+        raise
 
 
 def sort_profiles(profiles):
