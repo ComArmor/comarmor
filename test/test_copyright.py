@@ -16,6 +16,6 @@ from ament_copyright.main import main
 
 
 def test_copyright():
-    excluded = ['cpplint.py']
+    excluded = ['ElementInclude.py']
     rc = main(argv=['--exclude'] + excluded)
     assert rc == 0, 'Found errors'
