@@ -16,7 +16,7 @@
     <xs:complexType name="ProfileType">
         <xs:sequence minOccurs="1" maxOccurs="1">
             <xs:element name="attachments" type="ProfileAttachmentsKind" />
-            <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element name="profile" type="ProfileType" />
                 <xs:element name="topic" type="TopicRuleType" />
                 <xs:element name="ros_topic" type="ROSTopicRuleType" />
