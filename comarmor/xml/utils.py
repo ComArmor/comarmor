@@ -17,7 +17,7 @@ from xml.etree import cElementTree as ElementTree
 
 
 def tidy_xml(element):
-    subiter = ElementTree.ElementTree(element).getiterator()
+    subiter = ElementTree.ElementTree(element).iter()
     for x in subiter:
         if len(x):
             if x.text:
