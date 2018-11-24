@@ -20,4 +20,4 @@ import pkg_resources
 def get_profile_schema_path(name):
     return pkg_resources.resource_filename(
         package_or_requirement='comarmor',
-        resource_name=os.path.join('schema', 'profile', name))
+        resource_name=os.path.join('schema', name))

@@ -104,7 +104,7 @@ def parse_profile_paths(paths):
     from .xml import utils
     from .exceptions import InvalidProfile
 
-    profile_xsd_path = get_profile_schema_path('comarmor_profile.xsd')
+    profile_xsd_path = get_profile_schema_path('profiles.xsd')
     profile_schema = xmlschema.XMLSchema(profile_xsd_path)
 
     profile_storage = ProfileStorage()

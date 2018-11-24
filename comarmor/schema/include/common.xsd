@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+               schemaLocation="http://www.w3.org/2001/03/xml.xsd" />
+
+     <xs:simpleType name="AttachmentType">
+         <xs:restriction base="xs:string">
+             <!-- <xs:pattern value="[0-9]{5}(-[0-9]{4})?"/> -->
+         </xs:restriction>
+     </xs:simpleType>
+
+     <xs:complexType name="AttachmentsType">
+         <xs:sequence minOccurs="1" maxOccurs="unbounded">
+             <xs:element name="attachment" type="AttachmentType" />
+         </xs:sequence>
+     </xs:complexType>
+
+    <xs:simpleType name="ModifierType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="AUDIT" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="QualifierType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ALLOW" />
+            <xs:enumeration value="DENY" />
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

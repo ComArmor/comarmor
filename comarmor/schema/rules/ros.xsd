@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+               schemaLocation="http://www.w3.org/2001/03/xml.xsd" />
+    <xs:include schemaLocation="../include/rule.xsd"/>
+
+    <xs:element name="ros_action" type="ROSActionRuleType" substitutionGroup="rule"/>
+    <xs:element name="ros_parameter" type="ROSParameterRuleType" substitutionGroup="rule"/>
+    <xs:element name="ros_service" type="ROSServiceRuleType" substitutionGroup="rule"/>
+    <xs:element name="ros_topic" type="ROSTopicRuleType" substitutionGroup="rule"/>
+
+    <xs:complexType name="ROSActionPermissionType">
+        <xs:complexContent>
+        <xs:restriction base="BasePermissionType">
+            <xs:sequence>
+                <xs:element name="call" minOccurs="0" maxOccurs="1" />
+                <xs:element name="execute" minOccurs="0" maxOccurs="1" />
+            </xs:sequence>
+        </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ROSActionRuleType">
+        <xs:complexContent>
+        <xs:restriction base="BaseRuleType">
+            <xs:sequence>
+                <xs:element name="attachments" type="AttachmentsType" />
+                <xs:element name="permissions" type="ROSActionPermissionType" />
+            </xs:sequence>
+        </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ROSParameterPermissionType">
+        <xs:complexContent>
+        <xs:restriction base="BasePermissionType">
+            <xs:sequence>
+                <xs:element name="read" minOccurs="0" maxOccurs="1" />
+                <xs:element name="write" minOccurs="0" maxOccurs="1" />
+            </xs:sequence>
+        </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ROSParameterRuleType">
+        <xs:complexContent>
+        <xs:restriction base="BaseRuleType">
+            <xs:sequence>
+                <xs:element name="attachments" type="AttachmentsType" />
+                <xs:element name="permissions" type="ROSParameterPermissionType" />
+            </xs:sequence>
+        </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ROSServicePermissionType">
+        <xs:complexContent>
+        <xs:restriction base="BasePermissionType">
+            <xs:sequence>
+                <xs:element name="reply" minOccurs="0" maxOccurs="1" />
+                <xs:element name="request" minOccurs="0" maxOccurs="1" />
+            </xs:sequence>
+        </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ROSServiceRuleType">
+        <xs:complexContent>
+        <xs:restriction base="BaseRuleType">
+            <xs:sequence>
+                <xs:element name="attachments" type="AttachmentsType" />
+                <xs:element name="permissions" type="ROSServicePermissionType" />
+            </xs:sequence>
+        </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ROSTopicPermissionType">
+        <xs:complexContent>
+        <xs:restriction base="BasePermissionType">
+            <xs:sequence>
+                <xs:element name="publish" minOccurs="0" maxOccurs="1" />
+                <xs:element name="subscribe" minOccurs="0" maxOccurs="1" />
+            </xs:sequence>
+        </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ROSTopicRuleType">
+        <xs:complexContent>
+        <xs:restriction base="BaseRuleType">
+            <xs:sequence>
+                <xs:element name="attachments" type="AttachmentsType" />
+                <xs:element name="permissions" type="ROSTopicPermissionType" />
+            </xs:sequence>
+        </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

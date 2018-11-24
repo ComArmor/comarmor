@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+               schemaLocation="http://www.w3.org/2001/03/xml.xsd" />
+    <xs:include schemaLocation="../include/rule.xsd"/>
+
+    <xs:element name="dds_topic" type="DDSTopicRuleType" substitutionGroup="rule"/>
+
+    <xs:complexType name="DDSTopicPermissionType">
+        <xs:complexContent>
+            <xs:restriction base="BasePermissionType">
+                <xs:sequence>
+                    <xs:element name="publish" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="relay" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="subscribe" minOccurs="0" maxOccurs="1" />
+                </xs:sequence>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DDSTopicRuleType">
+        <xs:complexContent>
+            <xs:restriction base="BaseRuleType">
+                <xs:sequence>
+                    <xs:element name="attachments" type="AttachmentsType" />
+                    <xs:element name="permissions" type="DDSTopicPermissionType" />
+                </xs:sequence>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>
